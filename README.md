@@ -201,6 +201,9 @@ layout as the official _pwm/pwm-webapp_ image (`/config` volume, port 8443, same
 ```
 docker build -t resethub/pwm-webapp:latest .
 ```
+The `Docker publish` GitHub Actions workflow builds this image and publishes it to `ghcr.io/rmsimoes/pwm`
+(`latest` for the default branch, plus the git tag and short sha).
+
 `docker-compose.template.yml` is a ready-to-copy compose file (`PWM_IMAGE`, `PWM_CONFIG_DIR` and `PWM_HOSTNAME`
 can be set via environment or `.env`).
 

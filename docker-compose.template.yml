@@ -7,12 +7,12 @@
 #
 # Uso:
 #   cp docker-compose.template.yml docker-compose.yml
-#   docker compose build      # ou: docker compose pull, se a imagem estiver num registry
+#   docker compose pull       # imagem publicada pelo workflow Docker publish (ou: docker compose build)
 #   docker compose up -d
 
 services:
   pwm:
-    image: ${PWM_IMAGE:-resethub/pwm-webapp:latest}
+    image: ${PWM_IMAGE:-ghcr.io/rmsimoes/pwm:latest}
     build:
       context: .
     container_name: pwm

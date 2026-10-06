@@ -1,5 +1,9 @@
 # Changelog
 
+## [unreleased] - fork resethub
+- update embedded tomcat to v9.0.122 for onejar/docker artifacts (fixes pentest findings against v9.0.99)
+- add Dockerfile and docker-compose.template.yml for building/deploying without jib
+
 ## [2.0.8] - Release Feb 21, 2025
 - fix issue #711 ERROR_INVALID_FORMID and other errors with 
      recaptcha enabled in chrome and some other browsers

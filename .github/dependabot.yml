@@ -1,0 +1,25 @@
+version: 2
+updates:
+  - package-ecosystem: maven
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+    groups:
+      tomcat:
+        patterns:
+          - "org.apache.tomcat.embed:*"
+    ignore:
+      # Tomcat 10+ requires the javax -> jakarta migration; stay on 9.x (9.0 -> 9.1 is still allowed)
+      - dependency-name: "org.apache.tomcat.embed:*"
+        update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly

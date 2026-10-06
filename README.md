@@ -195,6 +195,23 @@ docker create --name mypwm -p '8443:8443' --mount 'type=bind,source=/home/user/p
 docker start mypwm
 ```
 
+### Docker (Dockerfile / compose)
+The repository root contains a `Dockerfile` that builds the image without a local JDK/maven, producing the same
+layout as the official _pwm/pwm-webapp_ image (`/config` volume, port 8443, same entrypoint and user):
+```
+docker build -t resethub/pwm-webapp:latest .
+```
+`docker-compose.template.yml` is a ready-to-copy compose file (`PWM_IMAGE`, `PWM_CONFIG_DIR` and `PWM_HOSTNAME`
+can be set via environment or `.env`).
+
+To replace the official image in an existing deployment without data loss, keep the same `/config` mapping and only
+change the image:
+1. Back up the config volume, e.g. `tar czf pwm-config-backup.tgz -C /opt/docker-volumes pwm`
+1. Build or pull the new image on the host.
+1. In the existing `docker-compose.yml` change `image: pwm/pwm-webapp:latest` to the new image.
+1. `docker compose up -d pwm` (recreates only the container; `/config` is untouched).
+1. Rollback, if needed: restore the previous `image:` line and run `docker compose up -d pwm` again.
+
 ## Build
 
 Build pre-requisites:

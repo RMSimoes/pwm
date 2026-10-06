@@ -1,0 +1,40 @@
+# Template docker compose para o PWM (fork resethub).
+#
+# Substitui diretamente a imagem oficial pwm/pwm-webapp: usa o mesmo volume
+# /config, a mesma porta 8443 (TLS gerido pelo próprio PWM) e corre com o
+# mesmo utilizador (root) da imagem original, por isso os dados existentes
+# são reaproveitados sem migração.
+#
+# Uso:
+#   cp docker-compose.template.yml docker-compose.yml
+#   docker compose build      # ou: docker compose pull, se a imagem estiver num registry
+#   docker compose up -d
+
+services:
+  pwm:
+    image: ${PWM_IMAGE:-resethub/pwm-webapp:latest}
+    build:
+      context: .
+    container_name: pwm
+#    ports:
+#      - "8443:8443"
+    networks:
+      - traefik
+    volumes:
+      - ${PWM_CONFIG_DIR:-/opt/docker-volumes/pwm}:/config
+      - /etc/localtime:/etc/localtime:ro
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.tcp.routers.pwm.rule=HostSNI(`${PWM_HOSTNAME:-pwm.example.com}`)"
+      - "traefik.tcp.routers.pwm.entrypoints=https"
+      - "traefik.tcp.routers.pwm.tls.passthrough=true"
+      - "traefik.tcp.routers.pwm.service=pwm-service"
+      - "traefik.tcp.services.pwm-service.loadbalancer.server.port=8443"
+      - "traefik.docker.network=traefik"
+      # Watchtower no updates
+      - "com.centurylinklabs.watchtower.enable=false"
+
+networks:
+  traefik:
+    external: true

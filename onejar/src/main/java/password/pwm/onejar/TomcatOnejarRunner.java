@@ -24,6 +24,7 @@ import org.apache.catalina.LifecycleException;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.util.ServerInfo;
+import org.apache.catalina.valves.ErrorReportValve;
 import org.apache.coyote.http2.Http2Protocol;
 
 import javax.servlet.ServletException;
@@ -106,6 +107,13 @@ public class TomcatOnejarRunner
 
         tomcat.getHost().setAutoDeploy( false );
         tomcat.getHost().setDeployOnStartup( false );
+
+        {
+            final ErrorReportValve errorReportValve = new ErrorReportValve();
+            errorReportValve.setShowReport( false );
+            errorReportValve.setShowServerInfo( false );
+            tomcat.getHost().getPipeline().addValve( errorReportValve );
+        }
 
         deployRedirectConnector( tomcat, onejarConfig );
 
